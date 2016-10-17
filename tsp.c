@@ -7,7 +7,10 @@ void main(int argc, char **argv)
 {
 	int left, right;
 	int i;
-	int countSeed = atoi(argv[1]);
+	int GENERATIONNUMBER = atoi(argv[2]);
+	float CROSSOVERCONST = atof(argv[3]);
+	float MUTATIONCONST = atof(argv[4]);
+	int countSeed = atoi(argv[5]);
 	int parent1, parent2;
 	tour *old, *new;
 	tour child1, child2; //after crossover
@@ -15,10 +18,9 @@ void main(int argc, char **argv)
 	int countNew = 0; //count the number of tour added to new
 	int randomMutation, randomCrossover; //for mutation and crossover
 
-
 	new = (tour *)malloc(sizeof(tour) * MAXTOUR);
 
-	old = iniPopulation(inputfromFile("eil51.tsp"));
+	old = iniPopulation(inputfromFile(argv[1]));
 	// printf("%d - %d\n", sizeof(old), sizeof(tour));
 
 	// printf("Old population\n");
@@ -39,7 +41,7 @@ void main(int argc, char **argv)
 		while (countNew < MAXTOUR)
 		{
 			randomCrossover = rand() % RANDOMRANGE;
-			if (randomCrossover < CROSSOVERCONST)
+			if (randomCrossover /(float) 100 <  CROSSOVERCONST)
 			{
 				parent1 = rand() % MAXTOUR;
 				parent2 = rand() % MAXTOUR;
@@ -53,7 +55,7 @@ void main(int argc, char **argv)
 
 				// crossover
 				randomMutation = rand() % RANDOMRANGE;
-				if (randomMutation < MUTATIONCONST)
+				if (randomMutation /(float) 100  < MUTATIONCONST)
 				{
 					mutation(&child1);
 					mutation(&child2);
@@ -70,12 +72,12 @@ void main(int argc, char **argv)
 			}
 		}
 	}
-	
+
 	printf("Count seed: %d\n", countSeed);
 
 	printf("The best result of old\n");
 	showTour(thebestTour(old));
-
+	exportResult(thebestTour(old), argv[1], "result.txt", GENERATIONNUMBER, countSeed);
 
 	if (old != NULL)
 		dropPopulation(old);
