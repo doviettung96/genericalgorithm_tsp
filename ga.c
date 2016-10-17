@@ -10,7 +10,7 @@ void showTour(tour t)
 		printf("%d ", t.city[i].number);
 	// 	//This is simple form
 	}
-	printf("\nDistance: %.2f\n", t.distance);
+	printf("\nFitness: %.2f\n", t.distance);
 }
 
 void showPopulation(tour *t)
@@ -74,7 +74,6 @@ float calculateFitness(tour t)
 
 tour iniTour() {
 	tour t;
-	srand(time(NULL));
 	for (int i = 0; i < MAXCITY; ++i)
 	{
 		t.city[i].number = i;
@@ -161,15 +160,14 @@ tour *iniPopulation(tour firstTour)
 	if (newPopulation == NULL)
 		exit(1);
 	newPopulation[0] = firstTour;
-	showTour(firstTour);
-	srand(time(NULL));
+	// showTour(firstTour);
 	srand(1);
 	for (int i = 1; i < MAXTOUR; ++i)
 	{
 		newPopulation[i] = newPopulation[0];
 		while (compareTours(newPopulation, i) == 0)
 		{
-			numberofSwap = rand() % 40 + 10;
+			numberofSwap = rand() % (MAXCITY - 10) + 10;
 			for (j = 0; j < numberofSwap; ++j)
 			{
 				swap_a = rand() % MAXCITY;
@@ -216,8 +214,6 @@ void mutation(tour *child)
 	int j;
 	int swap_a, swap_b;
 	int numberofSwap; //how many times to swap
-	srand(time(NULL));
-	
 	numberofSwap = rand() % 20 + 10;
 	for (j = 0; j < numberofSwap; ++j)
 	{
@@ -247,6 +243,19 @@ void overWrite(tour *oldTour, tour *newTour)
 	}
 }
 
+void exportResult(tour bestTour, char fileIn[], char fileOut[], int seed)
+{
+	FILE *f;
+	f = fopen(fileName, "w");
+	int i;
+	printf("fileName: %s_evaluate(%d)_popSize(%d)_seed(%d)_Final.tour\n", fileIn, GENERATIONNUMBER, MAXTOUR, seed);
+	printf("Seed: %d\n", seed);
+	printf("Fitness: %.2f\n", t.distance);
+	for(i = 0; i < MAXCITY; ++i)
+		printf("%d ", bestTour[i].number);
+	printf("\n");
+	fclose(f);
+}
 
 void dropPopulation(tour *t)
 {
