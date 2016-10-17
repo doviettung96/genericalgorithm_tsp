@@ -160,9 +160,9 @@ tour *iniPopulation(tour firstTour)
 		exit(1);
 
 	newPopulation[0] = firstTour;
-	showTour(firstTour);
-	// srand(time(NULL));
+	// showTour(firstTour);
 	// srand(1);
+	//maybe we will need srand(1) to keep the original population the same
 	for (int i = 1; i < MAXTOUR; ++i)
 	{
 		newPopulation[i] = newPopulation[0];
