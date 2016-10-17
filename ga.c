@@ -4,12 +4,7 @@ void showTour(tour t)
 {
 	int i;
 	for (i = 0; i < MAXCITY; ++i)
-	{
-	// 	// printf("%d-(%d;%d) ", t.city[i].number, t.city[i].add_x, t.city[i].add_y);
-	// 	//This is full form
 		printf("%d ", t.city[i].number);
-	// 	//This is simple form
-	}
 	printf("\nFitness: %.2f\n", t.distance);
 }
 
@@ -60,9 +55,13 @@ float calculateFitness(tour t)
 	int sub_x, sub_y; //subtraction between x1, x2...
 	for (i = 0; i < MAXCITY; ++i)
 	{
-		sub_x = t.city[i].add_x - t.city[i + 1].add_x;
-		sub_y = t.city[i].add_y - t.city[i + 1].add_y;
-		if (i == MAXCITY - 1)
+		if (i != MAXCITY - 1)
+		{
+			sub_x = t.city[i + 1].add_x - t.city[i].add_x;
+			sub_y = t.city[i + 1].add_y - t.city[i].add_y;
+		}
+
+		else
 		{
 			sub_x = t.city[i].add_x - t.city[0].add_x;
 			sub_y = t.city[i].add_y - t.city[0].add_y;
@@ -159,9 +158,11 @@ tour *iniPopulation(tour firstTour)
 	newPopulation = (tour *)malloc(sizeof(tour) * MAXTOUR);
 	if (newPopulation == NULL)
 		exit(1);
+
 	newPopulation[0] = firstTour;
-	// showTour(firstTour);
-	srand(1);
+	showTour(firstTour);
+	// srand(time(NULL));
+	// srand(1);
 	for (int i = 1; i < MAXTOUR; ++i)
 	{
 		newPopulation[i] = newPopulation[0];
@@ -171,10 +172,12 @@ tour *iniPopulation(tour firstTour)
 			for (j = 0; j < numberofSwap; ++j)
 			{
 				swap_a = rand() % MAXCITY;
-				while (swap_a == swap_b)
-					swap_b = rand() % MAXCITY;
+				// srand(2);
+				//previously the while(swap_a == swap_b) makes it core dumpted
+				swap_b = rand() % MAXCITY;
 				swap(&newPopulation[i].city[swap_a], &newPopulation[i].city[swap_b]);
 			}
+			// printf("Numswap %d swap_a %d swap_b %d\n", numberofSwap, swap_a, swap_b);
 			newPopulation[i].distance = calculateFitness(newPopulation[i]);
 		}
 	}
@@ -243,17 +246,17 @@ void overWrite(tour *oldTour, tour *newTour)
 	}
 }
 
-void exportResult(tour bestTour, char fileIn[], char fileOut[], int seed)
+void exportResult(tour bestTour, char fileIn[], char fileOut[], int GENERATIONNUMBER, int seed)
 {
 	FILE *f;
-	f = fopen(fileName, "w");
+	f = fopen(fileOut, "a");
 	int i;
-	printf("fileName: %s_evaluate(%d)_popSize(%d)_seed(%d)_Final.tour\n", fileIn, GENERATIONNUMBER, MAXTOUR, seed);
-	printf("Seed: %d\n", seed);
-	printf("Fitness: %.2f\n", t.distance);
-	for(i = 0; i < MAXCITY; ++i)
-		printf("%d ", bestTour[i].number);
-	printf("\n");
+	fprintf(f, "fileName: %s_evaluate(%d)_popSize(%d)_seed(%d)_Final.tour\n", fileIn, GENERATIONNUMBER, MAXTOUR, seed);
+	fprintf(f, "Seed: %d\n", seed);
+	fprintf(f, "Fitness: %.2f\n", bestTour.distance);
+	for (i = 0; i < MAXCITY; ++i)
+		fprintf(f, "%d ", bestTour.city[i].number);
+	fprintf(f, "\n");
 	fclose(f);
 }
 

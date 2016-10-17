@@ -20,6 +20,10 @@ void main(int argc, char **argv)
 
 	new = (tour *)malloc(sizeof(tour) * MAXTOUR);
 
+	srand(time(NULL)); //begin of each choice should have srand...
+	srand(countSeed);
+	//should be put above all
+	
 	old = iniPopulation(inputfromFile(argv[1]));
 	// printf("%d - %d\n", sizeof(old), sizeof(tour));
 
@@ -31,17 +35,15 @@ void main(int argc, char **argv)
 	// printf("New population\n");
 	// showPopulation(new);
 
-
 	printf("Crossover\n");
-	srand(time(NULL)); //begin of each choice should have srand...
-	srand(countSeed);
+
 	for (i = 0; i < GENERATIONNUMBER; ++i)
 	{
 		countNew = 0;
 		while (countNew < MAXTOUR)
 		{
 			randomCrossover = rand() % RANDOMRANGE;
-			if (randomCrossover /(float) 100 <  CROSSOVERCONST)
+			if (randomCrossover / (float) 100 <  CROSSOVERCONST)
 			{
 				parent1 = rand() % MAXTOUR;
 				parent2 = rand() % MAXTOUR;
@@ -55,7 +57,7 @@ void main(int argc, char **argv)
 
 				// crossover
 				randomMutation = rand() % RANDOMRANGE;
-				if (randomMutation /(float) 100  < MUTATIONCONST)
+				if (randomMutation / (float) 100  < MUTATIONCONST)
 				{
 					mutation(&child1);
 					mutation(&child2);
