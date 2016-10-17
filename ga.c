@@ -1,5 +1,36 @@
 #include "ga.h"
 
+void showTour(tour t)
+{
+	int i;
+	for (i = 0; i < MAXCITY; ++i)
+	{
+	// 	// printf("%d-(%d;%d) ", t.city[i].number, t.city[i].add_x, t.city[i].add_y);
+	// 	//This is full form
+		printf("%d ", t.city[i].number);
+	// 	//This is simple form
+	}
+	printf("\nDistance: %.2f\n", t.distance);
+}
+
+void showPopulation(tour *t)
+{
+	int i;
+	if (t == NULL)
+	{
+		printf("Empty population\n");
+		exit(1);
+	}
+	else
+	{
+		for (i = 0; i < MAXTOUR; ++i)
+		{
+			printf("The %d-th tour\n", i + 1);
+			showTour(t[i]);
+		}
+	}
+}
+
 int compareFitness(void const *a, void const *b)
 {
 	tour m, n;
@@ -85,17 +116,42 @@ void swap(city *a, city *b)
 	*b = temp;
 }
 
+void sortTour(tour *t)
+{
+	qsort(t, MAXTOUR, sizeof(tour), compareFitness);
+}
+
 tour thebestTour(tour *t)
 {
 	int i;
 	tour temp[MAXTOUR];
-	for(i = 0; i < MAXTOUR; ++i)
+	for (i = 0; i < MAXTOUR; ++i)
 		temp[i] = t[i];
 	qsort(temp, MAXTOUR, sizeof(tour), compareFitness); //compareFitness is function to compare t[i] and t[j]
 	return temp[0];
 }
 
-tour *iniPopulation()
+tour inputfromFile(char fileName[])
+{
+	int i;
+	FILE *fin;
+	tour firstTour;
+	int number, add_x, add_y;
+	fin = fopen(fileName, "r");
+	for (i = 0; i < MAXCITY; ++i)
+	{
+		fscanf(fin, "%d %d %d\n", &number, &add_x, &add_y);
+		firstTour.city[i].number = number;
+		firstTour.city[i].add_x = add_x;
+		firstTour.city[i].add_y = add_y;
+	}
+	firstTour.distance = calculateFitness(firstTour);
+	printf("Read success\n");
+	fclose(fin);
+	return firstTour;
+}
+
+tour *iniPopulation(tour firstTour)
 {
 	int j = 0;
 	int swap_a, swap_b;
@@ -104,8 +160,10 @@ tour *iniPopulation()
 	newPopulation = (tour *)malloc(sizeof(tour) * MAXTOUR);
 	if (newPopulation == NULL)
 		exit(1);
-	newPopulation[0] = iniTour();
+	newPopulation[0] = firstTour;
+	showTour(firstTour);
 	srand(time(NULL));
+	srand(1);
 	for (int i = 1; i < MAXTOUR; ++i)
 	{
 		newPopulation[i] = newPopulation[0];
@@ -124,6 +182,7 @@ tour *iniPopulation()
 	}
 	return newPopulation;
 }
+
 
 tour crossover(tour a, tour b, int left, int right)
 {
@@ -148,56 +207,43 @@ tour crossover(tour a, tour b, int left, int right)
 			child.city[i] = x;
 		}
 	}
+	child.distance = calculateFitness(child);
 	return child;
 }
 
-tour mutation(tour child)
+void mutation(tour *child)
 {
 	int j;
-	tour newChild = child;
 	int swap_a, swap_b;
 	int numberofSwap; //how many times to swap
 	srand(time(NULL));
+	
 	numberofSwap = rand() % 20 + 10;
 	for (j = 0; j < numberofSwap; ++j)
 	{
 		swap_a = rand() % MAXCITY;
 		swap_b = rand() % MAXCITY;
 		if (swap_a != swap_b)
-			swap(&newChild.city[swap_a], &newChild.city[swap_b]);
+			swap(&(*child).city[swap_a], &(*child).city[swap_b]);
 	}
-	return newChild;
+	(*child).distance = calculateFitness(*child);
 }
 
 void overWrite(tour *oldTour, tour *newTour)
 {
+	int i, j;
 	tour bestofOld = thebestTour(oldTour);
-	int beOverWriten; //the tour that will be replace by the best of newTour
-	beOverWriten = rand() % MAXTOUR;
-	newTour[beOverWriten] = bestofOld;// check later...
-	oldTour = newTour;
-}
-
-void showTour(tour t)
-{
-	int i;
-	for (i = 0; i < MAXCITY; ++i)
-	{
-		// printf("%d-(%d;%d) ", t.city[i].number, t.city[i].add_x, t.city[i].add_y);
-		//This is full form
-		printf("%d ", t.city[i].number);
-		//This is simple form
-	}
-	printf("\nDistance: %.2f\n", t.distance);
-}
-
-void showPopulation(tour *t)
-{
-	int i;
+	sortTour(newTour);
+	newTour[MAXTOUR - 1] = bestofOld;
 	for (i = 0; i < MAXTOUR; ++i)
 	{
-		printf("Tour %d-th\n", i + 1);
-		showTour(t[i]);
+		for (j = 0; j < MAXCITY; ++j)
+		{
+			oldTour[i].city[j].number = newTour[i].city[j].number;
+			oldTour[i].city[j].add_x = newTour[i].city[j].add_x;
+			oldTour[i].city[j].add_y = newTour[i].city[j].add_y;
+		}
+		oldTour[i].distance = calculateFitness(newTour[i]);
 	}
 }
 
