@@ -245,7 +245,7 @@ void overWrite(tour *oldTour, tour *newTour)
 	}
 }
 
-void exportResult(tour newTour, char fileIn[], char bestTemp[], char fileOut[], int GENERATIONNUMBER, int seed)
+void exportResult(tour newTour, char fileIn[], char bestTemp[], char fileOut[], char currentTime[], int GENERATIONNUMBER, int seed)
 {
 	int i;
 	FILE *fin, *fout;
@@ -263,10 +263,11 @@ void exportResult(tour newTour, char fileIn[], char bestTemp[], char fileOut[], 
 		fprintf(fout, "fileName: %s_evaluate(%d)_popSize(%d)_seed(%d)_Final.tour\n", fileIn, GENERATIONNUMBER, MAXTOUR, seed);
 		fprintf(fout, "Seed: %d\n", seed);
 		fprintf(fout, "Fitness: %.2f\n", newTour.distance);
-		fprintf(fin, "%.2f\n", newTour.distance);
-		//writing to a temp file
 		for (i = 0; i < MAXCITY; ++i)
 			fprintf(fout, "%d ", newTour.city[i].number);
+		fprintf(fout, "\nTime: %s\n", currentTime);
+		fprintf(fin, "%.2f\n", newTour.distance);
+		//writing to a temp file
 		fprintf(fout, "\n");
 
 		fclose(fin);

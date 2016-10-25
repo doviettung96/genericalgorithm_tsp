@@ -17,13 +17,13 @@ void main(int argc, char **argv)
 	tour child3, child4;//after mutation
 	int countNew = 0; //count the number of tour added to new
 	int randomMutation, randomCrossover; //for mutation and crossover
-
+	time_t currentTime;
 	new = (tour *)malloc(sizeof(tour) * MAXTOUR);
 
 	srand(time(NULL)); //begin of each choice should have srand...
 	srand(countSeed);
 	//should be put above all
-
+	// start = time(NULL);
 	old = iniPopulation(inputfromFile(argv[1]));
 	// printf("%d - %d\n", sizeof(old), sizeof(tour));
 
@@ -79,7 +79,9 @@ void main(int argc, char **argv)
 
 	printf("The best result of old\n");
 	showTour(thebestTour(old));
-	exportResult(thebestTour(old), argv[1], "temp.txt", "result.txt",  GENERATIONNUMBER, countSeed);
+	currentTime = time(NULL);
+
+	exportResult(thebestTour(old), argv[1], "temp.txt", "result.txt",  ctime(&currentTime), GENERATIONNUMBER, countSeed);
 
 	if (old != NULL)
 		dropPopulation(old);

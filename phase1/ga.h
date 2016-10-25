@@ -35,7 +35,7 @@ tour crossover(tour a, tour b, int left, int right); //after 1 child is born +1 
 // void offSpring(tour *old, tour *child1, tour *child2);
 void mutation(tour *child);
 void overWrite(tour *oldTour, tour *newTour);
-void exportResult(tour newTour, char fileIn[], char bestTemp[], char fileOut[], int GENERATIONNUMBER, int seed);
+void exportResult(tour newTour, char fileIn[], char bestTemp[], char fileOut[], char currentTime[], int GENERATIONNUMBER, int seed);
 void dropPopulation(tour *t);
 
 //srand(seed) inside a function will fix the value regardless outside of it... while srand(seed) in main() will generate different values depending on seed
