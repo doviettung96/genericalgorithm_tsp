@@ -1,9 +1,9 @@
 #declare the variable
 CC=gcc
 FLAGS =-g -Wall
-INCLUDES = -I../../Cadvance/lib/include
+INCLUDES = -I../lib/include
 # define any directories containing header files other than /usr/include
-LIBS = -L../../Cadvance/lib/implementation
+LIBS = -L../lib/implementation
 #define any directories containing implementation of the files in INCLUDES
 #../../lib means up 2 level then search for /lib
 LFLAGS= -lutility
