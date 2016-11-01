@@ -1,7 +1,7 @@
-fileName: eli51.tsp_evaluate(10000)_popSize(100)_seed(427)_Final.tour
+fileName: eil51.tsp_evaluate(10000)_popSize(100)_seed(427)_Final.tour
 Seed: 427
 Fitness: 606.82
 49 5 11 32 22 3 28 31 26 7 25 18 13 40 19 41 46 51 14 24 43 23 6 27 48 8 1 16 29 9 38 2 20 36 35 21 34 50 12 4 47 17 42 15 44 37 45 33 39 30 10 
-Time: Tue Oct 25 23:39:10 2016
+Time: Mon Oct 31 14:36:50 2016
 
 

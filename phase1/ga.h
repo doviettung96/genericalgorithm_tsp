@@ -3,8 +3,8 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
-#define MAXCITY 51
 #define MAXTOUR 100
 #define RANDOMRANGE 100
 
@@ -14,27 +14,34 @@ typedef struct {
 	int add_y;
 } city;
 
+int MAXCITY;
+
 typedef struct {
-	city city[MAXCITY]; //1 tour includes 50 cities
+	city city[1000]; //1 tour includes 50 cities
 	float distance;
 } tour;
 
 void showTour(tour t);
 void showPopulation(tour *t);
 int compareFitness(void const *a, void const *b);
-float calculateFitness(tour t); //calculate the total distance or result
-tour iniTour();
+float calculateFitness(tour t);
+ //calculate the total distance or result
+// tour iniTour();
 tour inputfromFile(char fileName[]);
-int compareTours(tour *t, int k); //compare k-th tour with k - 1 previous tours
+int compareTours(tour *t, int k);
+ //compare k-th tour with k - 1 previous tours
 void swap(city *a, city *b);
 void sortTour(tour *t);
 tour thebestTour(tour *t);
 tour *iniPopulation(tour firstTour);
 // tour *iniPopulation(tour firstTour);
-tour crossover(tour a, tour b, int left, int right); //after 1 child is born +1 to the countNumber
+tour crossover(tour a, tour b, int left, int right);
+ //after 1 child is born +1 to the countNumber
 // void offSpring(tour *old, tour *child1, tour *child2);
 void mutation(tour *child);
+
 void overWrite(tour *oldTour, tour *newTour);
+void exportReport(tour bestTour, char fileIn[], char fileOut[], int seed);
 void exportResult(tour newTour, char fileIn[], char bestTemp[], char fileOut[], char currentTime[], int GENERATIONNUMBER, int seed);
 void dropPopulation(tour *t);
 

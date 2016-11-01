@@ -1,5 +1,6 @@
 #include "ga.h"
 
+
 void showTour(tour t)
 {
 	int i;
@@ -71,17 +72,17 @@ float calculateFitness(tour t)
 	return distance;
 }
 
-tour iniTour() {
-	tour t;
-	for (int i = 0; i < MAXCITY; ++i)
-	{
-		t.city[i].number = i;
-		t.city[i].add_x = rand() % 1000;
-		t.city[i].add_y = rand() % 1000;
-	}
-	t.distance = calculateFitness(t);
-	return t;
-}
+// tour iniTour() {
+// 	tour t;
+// 	for (int i = 0; i < MAXCITY; ++i)
+// 	{
+// 		t.city[i].number = i;
+// 		t.city[i].add_x = rand() % 1000;
+// 		t.city[i].add_y = rand() % 1000;
+// 	}
+// 	t.distance = calculateFitness(t);
+// 	return t;
+// }
 
 int compareTours(tour *t, int k)
 {
@@ -136,6 +137,18 @@ tour inputfromFile(char fileName[])
 	tour firstTour;
 	int number, add_x, add_y;
 	fin = fopen(fileName, "r");
+	char temp[100];
+
+	while (1) {
+          fgets(temp, 100, fin);
+          // if(isdigit(temp[0]))
+          // 	MAXCITY = atoi(temp);
+          if (strcmp(temp, "NODE_COORD_SECTION\n") == 0)
+               break;
+     }
+
+	// firstTour.city = (city *)malloc(sizeof(city) * MAXCITY);
+     // printf("Input done!\n");
 	for (i = 0; i < MAXCITY; ++i)
 	{
 		fscanf(fin, "%d %d %d\n", &number, &add_x, &add_y);
@@ -155,6 +168,7 @@ tour *iniPopulation(tour firstTour)
 	int swap_a, swap_b;
 	int numberofSwap; //how many times to swap
 	tour *newPopulation;
+
 	newPopulation = (tour *)malloc(sizeof(tour) * MAXTOUR);
 	if (newPopulation == NULL)
 		exit(1);
@@ -243,6 +257,14 @@ void overWrite(tour *oldTour, tour *newTour)
 		}
 		oldTour[i].distance = calculateFitness(newTour[i]);
 	}
+}
+
+void exportReport(tour bestTour, char fileIn[], char fileOut[], int seed)
+{
+	FILE *f;
+	f = fopen(fileOut, "a");
+	fprintf(f, "File: %s - Seed %d: \n%.2f\n", fileIn, seed, bestTour.distance);
+	fclose(f);
 }
 
 void exportResult(tour newTour, char fileIn[], char bestTemp[], char fileOut[], char currentTime[], int GENERATIONNUMBER, int seed)

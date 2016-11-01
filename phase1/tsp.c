@@ -11,6 +11,7 @@ void main(int argc, char **argv)
 	float CROSSOVERCONST = atof(argv[3]);
 	float MUTATIONCONST = atof(argv[4]);
 	int countSeed = atoi(argv[5]);
+	MAXCITY = atoi(argv[6]);
 	int parent1, parent2;
 	tour *old, *new;
 	tour child1, child2; //after crossover
@@ -81,7 +82,8 @@ void main(int argc, char **argv)
 	showTour(thebestTour(old));
 	currentTime = time(NULL);
 
-	exportResult(thebestTour(old), argv[1], "temp.txt", "result.txt",  ctime(&currentTime), GENERATIONNUMBER, countSeed);
+	exportReport(thebestTour(old), argv[1], "report.txt", countSeed);
+	// exportResult(thebestTour(old), argv[1], "temp.txt", "result.txt",  ctime(&currentTime), GENERATIONNUMBER, countSeed);
 
 	if (old != NULL)
 		dropPopulation(old);
