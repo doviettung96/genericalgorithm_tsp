@@ -53,7 +53,7 @@ float calculateFitness(tour t)
 {
 	int i = 0;
 	float distance = 0;
-	int sub_x, sub_y; //subtraction between x1, x2...
+	float sub_x, sub_y; //subtraction between x1, x2...
 	for (i = 0; i < MAXCITY; ++i)
 	{
 		if (i != MAXCITY - 1)
@@ -115,9 +115,9 @@ void swap(city *a, city *b)
 	*b = temp;
 }
 
-void sortTour(tour *t)
+void sortTour(tour *t, int max)
 {
-	qsort(t, MAXTOUR, sizeof(tour), compareFitness);
+	qsort(t, max, sizeof(tour), compareFitness);
 }
 
 tour thebestTour(tour *t)
@@ -135,7 +135,8 @@ tour inputfromFile(char fileName[])
 	int i;
 	FILE *fin;
 	tour firstTour;
-	int number, add_x, add_y;
+	int number;
+	float add_x, add_y;
 	fin = fopen(fileName, "r");
 	char temp[100];
 
@@ -151,7 +152,7 @@ tour inputfromFile(char fileName[])
      // printf("Input done!\n");
 	for (i = 0; i < MAXCITY; ++i)
 	{
-		fscanf(fin, "%d %d %d\n", &number, &add_x, &add_y);
+		fscanf(fin, "%d %f %f\n", &number, &add_x, &add_y);
 		firstTour.city[i].number = number;
 		firstTour.city[i].add_x = add_x;
 		firstTour.city[i].add_y = add_y;
@@ -241,22 +242,30 @@ void mutation(tour *child)
 	(*child).distance = calculateFitness(*child);
 }
 
-void overWrite(tour *oldTour, tour *newTour)
+void copyData(tour *target, tour *source, int already_in_target)
 {
 	int i, j;
-	tour bestofOld = thebestTour(oldTour);
-	sortTour(newTour);
-	newTour[MAXTOUR - 1] = bestofOld;
 	for (i = 0; i < MAXTOUR; ++i)
 	{
 		for (j = 0; j < MAXCITY; ++j)
 		{
-			oldTour[i].city[j].number = newTour[i].city[j].number;
-			oldTour[i].city[j].add_x = newTour[i].city[j].add_x;
-			oldTour[i].city[j].add_y = newTour[i].city[j].add_y;
+			target[i + already_in_target].city[j].number = source[i].city[j].number;
+			target[i + already_in_target].city[j].add_x = source[i].city[j].add_x;
+			target[i + already_in_target].city[j].add_y = source[i].city[j].add_y;
 		}
-		oldTour[i].distance = calculateFitness(newTour[i]);
+		target[i + already_in_target].distance = calculateFitness(source[i]);
 	}
+}
+
+void overWrite(tour *oldTour, tour *newTour)
+{
+	tour *temp;
+	temp = (tour *)malloc(sizeof(tour) * MAXTOUR * 2);
+	copyData(temp, newTour, 0);
+	copyData(temp, oldTour, MAXTOUR);
+	sortTour(temp, MAXTOUR * 2);
+	copyData(oldTour, temp, 0);
+	free(temp);
 }
 
 void exportReport(tour bestTour, char fileIn[], char fileOut[], int seed)

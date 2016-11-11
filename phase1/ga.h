@@ -10,8 +10,8 @@
 
 typedef struct {
 	int number;
-	int add_x;
-	int add_y;
+	float add_x;
+	float add_y;
 } city;
 
 int MAXCITY;
@@ -31,7 +31,7 @@ tour inputfromFile(char fileName[]);
 int compareTours(tour *t, int k);
  //compare k-th tour with k - 1 previous tours
 void swap(city *a, city *b);
-void sortTour(tour *t);
+void sortTour(tour *t, int max);
 tour thebestTour(tour *t);
 tour *iniPopulation(tour firstTour);
 // tour *iniPopulation(tour firstTour);
@@ -39,7 +39,7 @@ tour crossover(tour a, tour b, int left, int right);
  //after 1 child is born +1 to the countNumber
 // void offSpring(tour *old, tour *child1, tour *child2);
 void mutation(tour *child);
-
+void copyData(tour *target, tour *source, int already_in_target);
 void overWrite(tour *oldTour, tour *newTour);
 void exportReport(tour bestTour, char fileIn[], char fileOut[], int seed);
 void exportResult(tour newTour, char fileIn[], char bestTemp[], char fileOut[], char currentTime[], int GENERATIONNUMBER, int seed);
