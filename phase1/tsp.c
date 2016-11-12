@@ -51,25 +51,26 @@ void main(int argc, char **argv)
 			{
 				parent1 = rand() % MAXTOUR;
 				parent2 = rand() % MAXTOUR;
-				left = rand() % MAXCITY;
-				right = left + rand() % (MAXCITY - left);
-				// printf("%d %d %d %d\n", parent1, parent2, left, right);
-				// printf("Error!\n");
-				child1 = crossover(old[parent1], old[parent2], left, right);
-				child2 = crossover(old[parent2], old[parent1], left, right);
-
+				// left = rand() % MAXCITY;
+				// right = left + rand() % (MAXCITY - left);
+				// // printf("%d %d %d %d\n", parent1, parent2, left, right);
+				// // printf("Error!\n");
+				// child1 = crossover(old[parent1], old[parent2], left, right);
+				// child2 = crossover(old[parent2], old[parent1], left, right);
+				child1 = MSCX(old[parent1], old[parent2]);
+				
 
 				// crossover
 				randomMutation = rand() % RANDOMRANGE;
 				if (randomMutation / (float) 100  < MUTATIONCONST)
 				{
 					mutation(&child1);
-					mutation(&child2);
+					// mutation(&child2);
 				}
 
 				//maybe born only 2 children
 				new[countNew++] = child1;
-				new[countNew++] = child2;
+				// new[countNew++] = child2;
 
 				if (countNew == MAXTOUR)
 					overWrite(old, new);

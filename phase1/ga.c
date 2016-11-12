@@ -272,7 +272,6 @@ void minTemp(float distance[], int *index_min)
 	int i;
 	int j = 1;
 	float tempDistance[5];
-	int index_min[5];
 	tempDistance[0] = 0;
 	index_min[0] = 0;
 	for (i = 1; i < 5; ++i)
@@ -291,7 +290,7 @@ tour MSCX(tour a, tour b)
 {
 	tour child;
 	city temp[5];
-	int position;
+	int position = -1;
 	int count;
 	int index_min[5];
 	int i;
@@ -309,11 +308,18 @@ tour MSCX(tour a, tour b)
 
 		minTemp(distance, index_min);
 
-
 		for (i = 0; i < MAXCITY; ++i)
 			if (compareCity(temp[index_min[1]], child.city[i]) == 1)
 				position = i;
+		if (position == -1)
+			child.city[count++] = temp[index_min[1]];
+		else
+			child.city[count++] = temp[index_min[2]];
+		temp[0] = child.city[count];
+		if (count == MAXCITY)
+			break;
 	}
+	return child;
 }
 
 void mutation(tour *child)
