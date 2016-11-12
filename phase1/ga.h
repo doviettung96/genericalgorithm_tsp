@@ -23,6 +23,7 @@ typedef struct {
 
 void showTour(tour t);
 void showPopulation(tour *t);
+float calculateDistance(city a, city b);
 int compareFitness(void const *a, void const *b);
 float calculateFitness(tour t);
  //calculate the total distance or result
@@ -35,8 +36,11 @@ void sortTour(tour *t, int max);
 tour thebestTour(tour *t);
 tour *iniPopulation(tour firstTour);
 // tour *iniPopulation(tour firstTour);
+
 tour crossover(tour a, tour b, int left, int right);
  //after 1 child is born +1 to the countNumber
+void findTemp(city *temp, tour parent, int left, int right);
+tour MSCX(tour a, tour b);
 // void offSpring(tour *old, tour *child1, tour *child2);
 void mutation(tour *child);
 void copyData(tour *target, tour *source, int already_in_target, int max);

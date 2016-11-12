@@ -48,6 +48,16 @@ int compareCity(city a, city b)
 		return 0; //different
 }
 
+float calculateDistance(city a, city b)
+{
+	float sub_x, sub_y;
+	float distance;
+	sub_x = a.add_x - b.add_x;
+	sub_y = a.add_y - b.add_y;
+	distance = fabs(sqrt(sub_x * sub_x + sub_y * sub_y));
+	return distance;
+}
+
 //total distance of the series of cities
 float calculateFitness(tour t)
 {
@@ -56,18 +66,11 @@ float calculateFitness(tour t)
 	float sub_x, sub_y; //subtraction between x1, x2...
 	for (i = 0; i < MAXCITY; ++i)
 	{
-		if (i != MAXCITY - 1)
-		{
-			sub_x = t.city[i + 1].add_x - t.city[i].add_x;
-			sub_y = t.city[i + 1].add_y - t.city[i].add_y;
-		}
+		if (i != MAXCITY - 1)			
+			distance += calculateDistance(t.city[i + 1], t.city[i]);
 
 		else
-		{
-			sub_x = t.city[i].add_x - t.city[0].add_x;
-			sub_y = t.city[i].add_y - t.city[0].add_y;
-		}
-		distance += fabs(sqrt(sub_x * sub_x + sub_y * sub_y));
+			distance += calculateDistance(t.city[i], t.city[0]);
 	}
 	return distance;
 }
@@ -141,15 +144,15 @@ tour inputfromFile(char fileName[])
 	char temp[100];
 
 	while (1) {
-          fgets(temp, 100, fin);
-          // if(isdigit(temp[0]))
-          // 	MAXCITY = atoi(temp);
-          if (strcmp(temp, "NODE_COORD_SECTION\n") == 0)
-               break;
-     }
+		fgets(temp, 100, fin);
+		// if(isdigit(temp[0]))
+		// 	MAXCITY = atoi(temp);
+		if (strcmp(temp, "NODE_COORD_SECTION\n") == 0)
+			break;
+	}
 
 	// firstTour.city = (city *)malloc(sizeof(city) * MAXCITY);
-     // printf("Input done!\n");
+	// printf("Input done!\n");
 	for (i = 0; i < MAXCITY; ++i)
 	{
 		fscanf(fin, "%d %f %f\n", &number, &add_x, &add_y);
@@ -226,6 +229,49 @@ tour crossover(tour a, tour b, int left, int right)
 	return child;
 }
 
+void findTemp(city *temp, tour parent, int left, int right)
+{
+	int i, position;
+
+	for (i = 0; i < MAXCITY; ++i)
+		if (compareCity(temp[0], parent.city[i]))
+			position = i;
+
+	if (position == 0)
+	{
+		temp[left] = parent.city[MAXCITY - 1];
+		temp[right] = parent.city[1];
+	}
+	else if (position == MAXCITY - 1)
+	{
+		temp[left] = parent.city[MAXCITY - 2];
+		temp[right] = parent.city[0];
+	}
+	else
+	{
+		temp[left] = parent.city[position - 1];
+		temp[right] = parent.city[position + 1];
+	}
+}
+
+tour MSCX(tour a, tour b)
+{
+	tour child;
+	city temp[5];
+	int position;
+	int count;
+	int i;
+	temp[0] = a.city[0];
+	child.city[0] = a.city[0];
+	count = 1;
+	while (1)
+	{
+		findTemp(temp, a, 1, 2);
+		findTemp(temp, b, 3, 4);
+
+	}
+}
+
 void mutation(tour *child)
 {
 	int j;
@@ -278,7 +324,6 @@ void regenerationPop(tour *oldTour)
 	sortTour(oldTour, MAXTOUR);
 	copyData(newPopulation, oldTour, 0, 50);
 
-	// newPopulation[50] = oldTour[49];
 	// showTour(firstTour);
 	// srand(1);
 	//maybe we will need srand(1) to keep the original population the same
