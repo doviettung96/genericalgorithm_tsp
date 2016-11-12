@@ -39,7 +39,8 @@ tour crossover(tour a, tour b, int left, int right);
  //after 1 child is born +1 to the countNumber
 // void offSpring(tour *old, tour *child1, tour *child2);
 void mutation(tour *child);
-void copyData(tour *target, tour *source, int already_in_target);
+void copyData(tour *target, tour *source, int already_in_target, int max);
+void regenerationPop(tour *oldTour);
 void overWrite(tour *oldTour, tour *newTour);
 void exportReport(tour bestTour, char fileIn[], char fileOut[], int seed);
 void exportResult(tour newTour, char fileIn[], char bestTemp[], char fileOut[], char currentTime[], int GENERATIONNUMBER, int seed);

@@ -242,10 +242,10 @@ void mutation(tour *child)
 	(*child).distance = calculateFitness(*child);
 }
 
-void copyData(tour *target, tour *source, int already_in_target)
+void copyData(tour *target, tour *source, int already_in_target, int max)
 {
 	int i, j;
-	for (i = 0; i < MAXTOUR; ++i)
+	for (i = 0; i < max; ++i)
 	{
 		for (j = 0; j < MAXCITY; ++j)
 		{
@@ -261,11 +261,46 @@ void overWrite(tour *oldTour, tour *newTour)
 {
 	tour *temp;
 	temp = (tour *)malloc(sizeof(tour) * MAXTOUR * 2);
-	copyData(temp, newTour, 0);
-	copyData(temp, oldTour, MAXTOUR);
+	copyData(temp, newTour, 0, MAXTOUR);
+	copyData(temp, oldTour, MAXTOUR, MAXTOUR);
 	sortTour(temp, MAXTOUR * 2);
-	copyData(oldTour, temp, 0);
+	copyData(oldTour, temp, 0, MAXTOUR);
 	free(temp);
+}
+
+void regenerationPop(tour *oldTour)
+{
+	int j = 0;
+	int swap_a, swap_b;
+	int numberofSwap; //how many times to swap
+	tour *newPopulation;
+	newPopulation = (tour *)malloc(sizeof(tour) * MAXTOUR);
+	sortTour(oldTour, MAXTOUR);
+	copyData(newPopulation, oldTour, 0, 50);
+
+	// newPopulation[50] = oldTour[49];
+	// showTour(firstTour);
+	// srand(1);
+	//maybe we will need srand(1) to keep the original population the same
+	for (int i = 50; i < MAXTOUR; ++i)
+	{
+		newPopulation[i] = newPopulation[0];
+		while (compareTours(newPopulation, i) == 0)
+		{
+			numberofSwap = rand() % (MAXCITY - 10) + 10;
+			for (j = 0; j < numberofSwap; ++j)
+			{
+				swap_a = rand() % MAXCITY;
+				//previously the while(swap_a == swap_b) makes it core dumpted
+				swap_b = rand() % MAXCITY;
+				swap(&newPopulation[i].city[swap_a], &newPopulation[i].city[swap_b]);
+			}
+			// printf("Numswap %d swap_a %d swap_b %d\n", numberofSwap, swap_a, swap_b);
+			newPopulation[i].distance = calculateFitness(newPopulation[i]);
+		}
+	}
+	copyData(oldTour, newPopulation, 0, MAXTOUR);
+	free(newPopulation);
 }
 
 void exportReport(tour bestTour, char fileIn[], char fileOut[], int seed)

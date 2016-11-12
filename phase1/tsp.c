@@ -7,6 +7,7 @@ void main(int argc, char **argv)
 {
 	int left, right;
 	int i;
+	int dupTour = 0; //check if before and after cross are the same
 	int GENERATIONNUMBER = atoi(argv[2]);
 	float CROSSOVERCONST = atof(argv[3]);
 	float MUTATIONCONST = atof(argv[4]);
@@ -14,6 +15,7 @@ void main(int argc, char **argv)
 	MAXCITY = atoi(argv[6]);
 	int parent1, parent2;
 	tour *old, *new;
+	tour beforeCross, afterCross;
 	tour child1, child2; //after crossover
 	tour child3, child4;//after mutation
 	int countNew = 0; //count the number of tour added to new
@@ -36,6 +38,7 @@ void main(int argc, char **argv)
 	// printf("New population\n");
 	// showPopulation(new);
 
+	beforeCross = thebestTour(old);
 	printf("Crossover\n");
 
 	for (i = 0; i < GENERATIONNUMBER; ++i)
@@ -74,6 +77,14 @@ void main(int argc, char **argv)
 				//Now add children into New.
 			}
 		}
+		afterCross = thebestTour(old);
+		if(compareFitness(&beforeCross, &afterCross) == 0)
+			dupTour++;
+		else
+			dupTour = 0;
+
+		if(dupTour == 10)
+			regenerationPop(old);
 	}
 
 	printf("Count seed: %d\n", countSeed);
