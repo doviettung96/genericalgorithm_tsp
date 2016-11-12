@@ -235,7 +235,10 @@ void findTemp(city *temp, tour parent, int left, int right)
 
 	for (i = 0; i < MAXCITY; ++i)
 		if (compareCity(temp[0], parent.city[i]) == 1)
+		{
 			position = i;
+			break;
+		}
 
 	if (position == 0)
 	{
@@ -290,35 +293,46 @@ tour MSCX(tour a, tour b)
 {
 	tour child;
 	city temp[5];
-	int position = -1;
-	int count;
+	int flag = -1;
+	int count = 0;
 	int index_min[5];
-	int i;
+	int i, j;
 	float distance[5];
+
 	temp[0] = a.city[0];
 	child.city[0] = a.city[0];
 	count = 1;
 	distance[0] = 0;
-	while (1)
+
+	while (count < MAXCITY)
 	{
 		findTemp(temp, a, 1, 2);
 		findTemp(temp, b, 3, 4);
+
 		for (i = 1; i < 5; ++i)
 			distance[i] = calculateDistance(temp[0], temp[i]);
 
 		minTemp(distance, index_min);
 
-		for (i = 0; i < MAXCITY; ++i)
-			if (compareCity(temp[index_min[1]], child.city[i]) == 1)
-				position = i;
-		if (position == -1)
-			child.city[count++] = temp[index_min[1]];
-		else
-			child.city[count++] = temp[index_min[2]];
+		for (j = 1; j < 5; ++j)
+		{
+			flag = -1;
+			for (i = 0; i < count; ++i)
+				if (compareCity(temp[index_min[j]], child.city[i]) == 1)
+					flag = 1;
+
+			if (flag == -1)
+			{
+				child.city[count++] = temp[index_min[j]];
+				break;
+			}
+		}
 		temp[0] = child.city[count];
-		if (count == MAXCITY)
-			break;
+		// printf("Core dumpted\n");
 	}
+
+	printf("Core dumpted\n");
+
 	return child;
 }
 

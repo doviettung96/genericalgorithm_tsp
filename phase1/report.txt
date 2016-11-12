@@ -42,3 +42,7 @@ File: eil51.tsp - Seed 9:
 840.16
 File: eil51.tsp - Seed 0: 
 844.92
+File: eil51.tsp - Seed 0: 
+1104.61
+File: eil51.tsp - Seed 0: 
+1077.92

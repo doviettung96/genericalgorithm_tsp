@@ -57,20 +57,22 @@ void main(int argc, char **argv)
 				// // printf("Error!\n");
 				// child1 = crossover(old[parent1], old[parent2], left, right);
 				// child2 = crossover(old[parent2], old[parent1], left, right);
+
 				child1 = MSCX(old[parent1], old[parent2]);
-				
+				child2 = MSCX(old[parent2], old[parent1]);
+
 
 				// crossover
 				randomMutation = rand() % RANDOMRANGE;
 				if (randomMutation / (float) 100  < MUTATIONCONST)
 				{
 					mutation(&child1);
-					// mutation(&child2);
+					mutation(&child2);
 				}
 
 				//maybe born only 2 children
 				new[countNew++] = child1;
-				// new[countNew++] = child2;
+				new[countNew++] = child2;
 
 				if (countNew == MAXTOUR)
 					overWrite(old, new);
@@ -78,13 +80,14 @@ void main(int argc, char **argv)
 				//Now add children into New.
 			}
 		}
+		// printf("Core dumpted\n");
 		afterCross = thebestTour(old);
-		if(compareFitness(&beforeCross, &afterCross) == 0)
+		if (compareFitness(&beforeCross, &afterCross) == 0)
 			dupTour++;
 		else
 			dupTour = 0;
 
-		if(dupTour == 10)
+		if (dupTour == 10)
 			regenerationPop(old);
 	}
 
