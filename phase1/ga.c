@@ -66,7 +66,7 @@ float calculateFitness(tour t)
 	float sub_x, sub_y; //subtraction between x1, x2...
 	for (i = 0; i < MAXCITY; ++i)
 	{
-		if (i != MAXCITY - 1)			
+		if (i != MAXCITY - 1)
 			distance += calculateDistance(t.city[i + 1], t.city[i]);
 
 		else
@@ -234,7 +234,7 @@ void findTemp(city *temp, tour parent, int left, int right)
 	int i, position;
 
 	for (i = 0; i < MAXCITY; ++i)
-		if (compareCity(temp[0], parent.city[i]))
+		if (compareCity(temp[0], parent.city[i]) == 1)
 			position = i;
 
 	if (position == 0)
@@ -254,21 +254,65 @@ void findTemp(city *temp, tour parent, int left, int right)
 	}
 }
 
+int compareFloat(void const *m, void const *n)
+{
+	float a, b;
+	a = *((float *)m);
+	b = *((float *)n);
+	if (a > b)
+		return 1;
+	else if (a < b)
+		return -1;
+	else
+		return 0;
+}
+
+void minTemp(float distance[], int *index_min)
+{
+	int i;
+	int j = 1;
+	float tempDistance[5];
+	int index_min[5];
+	tempDistance[0] = 0;
+	index_min[0] = 0;
+	for (i = 1; i < 5; ++i)
+		tempDistance[i] = distance[i];
+
+	qsort(tempDistance, 5, sizeof(float), compareFloat);
+
+	for (i = 1; i < 5; ++i)
+		for (j = 1; j < 5; ++j)
+			if (tempDistance[i] == distance[j])
+				index_min[i] = j;
+	//find indexes of the smallest distances
+}
+
 tour MSCX(tour a, tour b)
 {
 	tour child;
 	city temp[5];
 	int position;
 	int count;
+	int index_min[5];
 	int i;
+	float distance[5];
 	temp[0] = a.city[0];
 	child.city[0] = a.city[0];
 	count = 1;
+	distance[0] = 0;
 	while (1)
 	{
 		findTemp(temp, a, 1, 2);
 		findTemp(temp, b, 3, 4);
+		for (i = 1; i < 5; ++i)
+			distance[i] = calculateDistance(temp[0], temp[i]);
 
+		minTemp(distance, index_min);
+
+
+		for (i = 0; i < MAXCITY; ++i)
+			if (compareCity(temp[index_min[1]], child.city[i]) == 1)
+				position = i;
 	}
 }
 
